@@ -14,6 +14,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Popup;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 /**
  * http://stackoverflow.com/questions/17522343/custom-javafx-webview-protocol-handler
  * http://stackoverflow.com/questions/16215844/javafx-webview-disable-same-origin-policy-allow-cross-domain-requests
@@ -49,8 +50,9 @@ public class Lock extends Application {
 		// stage.getIcons().add(new Image(LOGO));
 		Parent root = FXMLLoader.load(getClass().getResource("Index.fxml"), bundle);
 		Scene scene = new Scene(root);
-		stage.setFullScreen(true);
+		//stage.setFullScreen(true);
 		stage.setAlwaysOnTop(true);
+		  stage.initStyle(StageStyle.UNDECORATED);
 		stage.fullScreenExitKeyProperty().set(KeyCombination.NO_MATCH);
 		stage.setScene(scene);
 		Rectangle2D bounds = allScreens();

@@ -13,9 +13,14 @@
  fx:id="root" stylesheets="@Index.css">
     <Region VBox.vgrow="ALWAYS"/>
 	<HBox >
-		<Region HBox.hgrow="ALWAYS"/>
-		<PasswordField fx:id="text" prefWidth="500" onAction="#go"></PasswordField>
-		<Region HBox.hgrow="ALWAYS"/>
+		<HBox HBox.hgrow="ALWAYS">
+			<Region HBox.hgrow="ALWAYS"/>
+				<PasswordField fx:id="text" prefWidth="500" onAction="#go"></PasswordField>
+			<Region HBox.hgrow="ALWAYS"/>
+		</HBox>
+		<HBox HBox.hgrow="ALWAYS">
+		
+		</HBox>
 	</HBox>
     <Region VBox.vgrow="ALWAYS"/>
 </VBox>
