@@ -1,4 +1,6 @@
 #root{
   -fx-background-color: #000;
-  -fx-background-image: url("file:///home/fil/Images/fond d'écran/Lamborghini-Aventador-Wallpapers-3200x1800.jpg");
+  /*-fx-background-image: url("file:///home/fil/Images/fond d\'écran/Lamborghini-Aventador-Wallpapers-3200x1800.jpg");*/
+  /* -fx-background-image: url("file://C:/opt/doc/the_tugs_tobermory.jpg");*/
+  
 }

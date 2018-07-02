@@ -6,12 +6,14 @@ import java.util.ResourceBundle;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.image.Image;
-import javafx.stage.*;
-
-import javafx.scene.input.*;
+import javafx.scene.input.KeyCombination;
+import javafx.scene.layout.VBox;
+import javafx.stage.Popup;
+import javafx.stage.Screen;
+import javafx.stage.Stage;
 /**
  * http://stackoverflow.com/questions/17522343/custom-javafx-webview-protocol-handler
  * http://stackoverflow.com/questions/16215844/javafx-webview-disable-same-origin-policy-allow-cross-domain-requests
@@ -39,6 +41,7 @@ public class Lock extends Application {
 	}
 
 	public void start(Stage stage) throws IOException {
+		System.out.println("Lock screen");
 		// Injector.registerExistingAndInject (this);
 		// Injector.setModelOrService(this.getClass (),this);
 		stage.setTitle("Lock screen");
@@ -50,16 +53,59 @@ public class Lock extends Application {
 		stage.setAlwaysOnTop(true);
 		stage.fullScreenExitKeyProperty().set(KeyCombination.NO_MATCH);
 		stage.setScene(scene);
+		Rectangle2D bounds = allScreens();
+		stage.setX(bounds.getMinX());
+		stage.setY(bounds.getMinY());
+		stage.setWidth(bounds.getWidth());
+		stage.setHeight(bounds.getHeight());
+		
+		stage.setOnCloseRequest(e->e.consume());
 		
 		stage.show();
+		//hideScreens();
+		
+		
+	}
+	
+	private Rectangle2D allScreens() {
+		double minX=0;
+		double minY=0;
+		double maxX=0;
+		double maxY=0;
+		
 		for( Screen screen:Screen.getScreens()) {
-			if(screen != Screen.getPrimary()) {
-				Popup popup = new Popup();
-				//popup.setS
+			minX=Math.min(minX,screen.getBounds().getMinX());
+			maxX=Math.max(maxX,screen.getBounds().getMaxX());
+			minY=Math.min(minY,screen.getBounds().getMinY());
+			maxY=Math.max(maxY,screen.getBounds().getMaxY());
+		}
+		return new Rectangle2D(minX,minY,maxX-minX,maxY-minY);
+	}
+
+	private void hideScreens() {
+		Screen primary = Screen.getPrimary();
+		
+		for( Screen screen:Screen.getScreens()) {
+			if(!screen.getBounds().equals( primary.getBounds())) {
+				hideScreen(screen);
 			}
 		}
-		
-		
+	}
+
+	private void hideScreen(Screen screen) {
+		Stage popup = new Stage();
+		popup.setAlwaysOnTop(true);
+		Rectangle2D bounds = screen.getBounds();
+		popup.setFullScreen(true);
+		popup.setX(bounds.getMinX());
+		popup.setY(bounds.getMinY());
+		popup.setWidth(bounds.getWidth());
+		popup.setHeight(bounds.getHeight());
+		popup.setScene(new Scene(new VBox()));
+		popup.setOnCloseRequest(e->{});
+		popup.setResizable(false);
+		popup.fullScreenExitKeyProperty().set(KeyCombination.NO_MATCH);
+		popup.show();
 	}
 
 	@Override
