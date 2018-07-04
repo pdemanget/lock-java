@@ -38,7 +38,30 @@ public class Lock extends Application {
 	private ResourceBundle bundle = ResourceBundle.getBundle("i18n/lock", Locale.getDefault());
 
 	public static void main(String[] args) {
+		if(args.length>=2 && "-p".equals( args[0]) ) {
+			try {
+				LockManager.instance.save(LockManager.instance.currentUser(),args[1]);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			System.out.println("Password saved for "+LockManager.instance.currentUser());
+			return;
+		}
+		if(args.length>=1 && "--help".equals( args[0]) ) {
+			usage();
+			return;
+		}
+		if(!LockManager.instance.hasPassword(LockManager.instance.currentUser())) {
+			System.err.println("No Password saved for "+LockManager.instance.currentUser());
+			usage();
+			return;
+		}
 		launch(args);
+	}
+
+	private static void usage() {
+		System.out.println("Usage:\n $ lock -p password : set password\n lock --help : display this help");
+		
 	}
 
 	public void start(Stage stage) throws IOException {

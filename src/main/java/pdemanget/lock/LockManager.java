@@ -13,13 +13,11 @@ import de.mkammerer.argon2.Argon2;
 import de.mkammerer.argon2.Argon2Factory;
 
 public class LockManager {
-	private static final String PWD = "~/etc/lock-java.pwd";
+	private static final String PWD = "etc/lock-java.pwd";
 	public static final LockManager instance = new LockManager();
 	private Argon2 argon2 = Argon2Factory.create();
 	Map<String,String> users=new TreeMap<>();
 	
-	private String stored="$argon2i$v=19$m=65536,t=2,p=1$J47ePzoa/2zBi0V6cwKzrg$Ipl7r7vAi930ta49cfhwCXzydqoNGfq+2gbOGQAQMk8";
-
 	private LockManager() {
 		try {
 			loadFile();
@@ -41,14 +39,23 @@ public class LockManager {
 				users.put(cols[0],cols[1]);
 			}
 		}
-		String pass=users.get(System.getenv("USER"));
-		if (pass != null) {
-			stored=pass;
-		}
+	}
+
+	public String currentUser() {
+		//TODO windows user
+		return System.getenv("USER");
 	}
 	
-	public boolean check(String password) {
-		return argon2.verify(stored, password);
+	public boolean hasPassword(String user) {
+		return  users.get(user)!=null;
+	}
+	
+	public boolean check(String user,String password) {
+		String pass = users.get(user);
+		if( pass== null) {
+			return false;
+		}
+		return argon2.verify(pass, password);
 	}
 	
 	public void save(String user, String password) throws IOException {
@@ -63,12 +70,4 @@ public class LockManager {
 		//argon2.wipeArray(password);
 	}
 	
-	public static void main(String[] args) {
-		try {
-			instance.save("fil","coucou");
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
 }
