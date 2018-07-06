@@ -18,8 +18,13 @@ public class LockManager {
 	private Argon2 argon2 = Argon2Factory.create();
 	Map<String,String> users=new TreeMap<>();
 	
+    public static boolean isWindows() {
+        return System.getProperty( "os.name" ).toLowerCase().indexOf( "win" ) >= 0;
+    }
+	
 	private LockManager() {
 		try {
+			System.setProperty("line.separator", "\n");
 			loadFile();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -42,12 +47,16 @@ public class LockManager {
 	}
 
 	public String currentUser() {
-		//TODO windows user
-		return System.getenv("USER");
+		if(isWindows()) {
+			return new com.sun.security.auth.module.NTSystem().getName();
+		}else {
+			return System.getenv("USER");
+		}
+		//String userName = System.getProperty("user.name");
 	}
 	
 	public boolean hasPassword(String user) {
-		return  users.get(user)!=null;
+		return  user==null?null:users.get(user)!=null;
 	}
 	
 	public boolean check(String user,String password) {
