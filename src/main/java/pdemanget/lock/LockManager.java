@@ -1,6 +1,7 @@
 package pdemanget.lock;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -48,11 +49,17 @@ public class LockManager {
 
 	public String currentUser() {
 		if(isWindows()) {
-			return new com.sun.security.auth.module.NTSystem().getName();
+			try {
+				Class<?> NtSystem = Class.forName("com.sun.security.auth.module.NTSystem");
+				return (String) NtSystem.getMethod("getName").invoke( NtSystem.newInstance());
+			} catch (ClassNotFoundException | IllegalAccessException | IllegalArgumentException
+					| InvocationTargetException | NoSuchMethodException | SecurityException
+					| InstantiationException e) {
+				return System.getProperty("user.name");
+			}
 		}else {
 			return System.getenv("USER");
 		}
-		//String userName = System.getProperty("user.name");
 	}
 	
 	public boolean hasPassword(String user) {
