@@ -1,6 +1,6 @@
 #root{
   -fx-background-color: #000;
-  -fx-background-image: url("file:///home/fil/Firefox_wallpaper.png");
+  -fx-background-image: url("file:///opt/lib/maldives.jpeg");
 }
 
 PasswordField{

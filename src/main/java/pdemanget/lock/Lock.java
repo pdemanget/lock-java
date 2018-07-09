@@ -1,17 +1,18 @@
 package pdemanget.lock;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
 import javafx.application.Application;
+import javafx.beans.Observable;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.VBox;
-import javafx.stage.Popup;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -78,18 +79,26 @@ public class Lock extends Application {
 		  stage.initStyle(StageStyle.UNDECORATED);
 		stage.fullScreenExitKeyProperty().set(KeyCombination.NO_MATCH);
 		stage.setScene(scene);
-		Rectangle2D bounds = allScreens();
-		stage.setX(bounds.getMinX());
-		stage.setY(bounds.getMinY());
-		stage.setWidth(bounds.getWidth());
-		stage.setHeight(bounds.getHeight());
+		resizeWindow(stage);
 		
 		stage.setOnCloseRequest(e->e.consume());
 		
 		stage.show();
 		//hideScreens();
+		Screen.getScreens().addListener((Observable o)->{
+			resizeWindow(stage);
+		});
 		
+	}
+
+	private void resizeWindow(Stage stage) {
 		
+		Rectangle2D bounds = allScreens();
+		stage.setX(bounds.getMinX());
+		stage.setY(bounds.getMinY());
+		stage.setWidth(bounds.getWidth());
+		stage.setHeight(bounds.getHeight());
+		System.out.println("Resized "+bounds.getWidth()+" "+LocalDateTime.now());
 	}
 	
 	private Rectangle2D allScreens() {
@@ -104,6 +113,7 @@ public class Lock extends Application {
 			minY=Math.min(minY,screen.getBounds().getMinY());
 			maxY=Math.max(maxY,screen.getBounds().getMaxY());
 		}
+		
 		return new Rectangle2D(minX,minY,maxX-minX,maxY-minY);
 	}
 
